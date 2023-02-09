@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+      function sendGetRequest() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:8000/helloworld/", true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            //console.log(data);
+	    //document.getElementById("response").innerHTML = xhr.responseText; 
+
+            //convert json data to csv format
+	    let csv = Object.keys(data[0]).join(',')+'\n';
+            data.forEach(row => {
+		csv += Object.values(row).join(',') + '\n';
+	    });
+
+            
+
+            // Convert CSV data to arrays for chart.js
+            const lines = csv.split('\n');
+            const labels = lines[0].split(',');
+
+            const countries = [];
+	    const values = [];
+            for (let i = 1; i < lines.length - 1; i++) {
+                const datavalues = lines[i].split(',');
+		countries.push(datavalues[0]);
+                values.push(datavalues[3]);
+            }
+
+	    
+			      
+            // Plot pie chart
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const pieChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: countries,
+	   	    datasets:[{
+                        label: 'GDPs at different countries',
+	                data: values,
+	                backgroundColor: 'blue',
+	            }]
+                }
+            });
+          }
+        };
+        xhr.send();
+      }
+    </script>
+  </head>
+  <body>
+    <button id='submitBtn' onclick="sendGetRequest()">Get Data</button>
+    <div id='response'>
+    </div>
+
+    <canvas id="pieChart"></canvas>
+
+  </body>
+</html>
+

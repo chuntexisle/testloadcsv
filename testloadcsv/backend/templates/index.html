@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Backend Index Page</title>
+  </head>
+  <body>
+    {% for post in posts %}
+    <p>{{ post.title }}</p>
+    <li>{{ post.author }}</li>
+    {% endfor %}
+  </body>
+</html>
